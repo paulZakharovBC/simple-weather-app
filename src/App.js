@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import './App.css';
 
 
@@ -7,12 +7,48 @@ const api = {
   base: 'https://api.openweathermap.org/data/2.5/'
 }
 
-function App() {
+class App extends React.Component {
+  state = {
+    query: '',
+    currentCity: '',
+    weather: {}
+  }
+
+  handleSearch = (event) => {
+    this.setState({
+      query: event.target.value,
+      currentCity: event.target.value
+    })
+
+  }
+
+  search = (event) => {
+    if (event.key === 'Enter') {
+      fetch(`${api.base}weather?q=${this.state.query}&units=metric&APPID=${api.key}`)
+        .then(res => res.json())
+        .then(result => {
+          this.setState({
+            query: '',
+            weather: result
+          })
+        })
+    }
+  }
+
+  updateCurrentCityWeather = () => {
+    fetch(`${api.base}weather?q=${this.state.currentCity}&units=metric&APPID=${api.key}`)
+      .then(res => res.json())
+      .then(result => {
+        this.setState({
+          weather: result
+        })
+      })
+
+  }
 
 
 
-
-  const dateBuilder = (d) => {
+  dateBuilder = (d) => {
 
     let months = ['January', 'February', 'March', "April", 'May', 'June', 'July',
       'August', 'September', 'October', 'November', 'December'];
@@ -26,37 +62,54 @@ function App() {
     return `${day} ${date} ${month} ${year}`
   }
 
+  render() {
+    return (
+      <div className="app morning">
+        <main>
+          <div className='search-box'>
+            <input
+              type='text'
+              className='search-input'
+              placeholder='Search...'
+              onChange={this.handleSearch}
+              value={this.state.query}
+              onKeyPress={this.search}
 
-
-  return (
-    <div className="app morning">
-      <main>
-        <div className='search-box'>
-          <input
-            type='text'
-            className='search-input'
-            placeholder='Search...'
-
-          />
-        </div>
-        <div className='location-container'>
-          <div className='location'> Vancouver, Canada </div>
-          <div className='date'>{dateBuilder(new Date())}</div>
-        </div>
-        <div className='weather-container'>
-          <div className='temp'>
-            15° c
-          </div>
-          <div className='weather'>
-            Sunny
+            />
           </div>
 
-        </div>
-        
-      </main>
+          {(typeof this.state.weather.main != 'undefined') ? (
+            <div>
+              <div className='location-container'>
+                <div className='location'> {this.state.weather.name}, {this.state.weather.sys.country} </div>
+                <div className='date'>{this.dateBuilder(new Date())}</div>
+              </div>
+              <div className='weather-container'>
+                <div className='temp'>
+                  {Math.round(this.state.weather.main.temp)}°c
+            </div>
+                <div className='weather'>
+                  {this.state.weather.weather[0].main}
+                </div>
 
-    </div>
-  );
+              </div>
+              {/* <button
+                onClick={this.updateCurrentCityWeather}
+
+              >Update</button> */}
+            </div>
+          ) : null}
+
+
+
+
+
+        </main>
+
+      </div>
+    );
+
+  }
 }
 
 export default App;
