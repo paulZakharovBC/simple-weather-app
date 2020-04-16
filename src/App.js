@@ -11,6 +11,7 @@ class App extends React.Component {
   state = {
     query: '',
     idForNextCity: 0,
+    lastCityInTheList: false,
     currentShowingCityID: 0,
     weather: {},
     listOfCities: []
@@ -38,30 +39,61 @@ class App extends React.Component {
             ...this.state.listOfCities,
             newCity
           ]
-          this.setState( prevState => ({
+          this.setState(prevState => ({
             query: '',
             weather: result,
             idForNextCity: prevState.idForNextCity + 1,
+            currentShowingCityID: newCity.cityId,
             listOfCities: newArray
           }))
         })
 
-        
+
 
 
     }
   }
 
-  // updateCurrentCityWeather = () => {
-  //   fetch(`${api.base}weather?q=${this.state.currentCity}&units=metric&APPID=${api.key}`)
-  //     .then(res => res.json())
-  //     .then(result => {
-  //       this.setState({
-  //         weather: result
-  //       })
-  //     })
+  nextCityChangeHandler = () => {
 
-  // }
+    
+    if (this.state.currentShowingCityID == this.state.listOfCities.length - 1) {
+      debugger
+      this.setState({
+        currentShowingCityID: 0
+      })
+    } else {
+      debugger
+      this.setState(prevState => ({
+            currentShowingCityID: prevState.currentShowingCityID + 1
+        }))
+    }
+
+    //   this.setState(prevState => ({
+    //     currentShowingCityID: prevState.currentShowingCityID + 1
+    //   }))
+    // }
+
+
+    // updateCurrentCityWeather = () => {
+    //   fetch(`${api.base}weather?q=${this.state.currentCity}&units=metric&APPID=${api.key}`)
+    //     .then(res => res.json())
+    //     .then(result => {
+    //       this.setState({
+    //         weather: result
+    //       })
+    //     })
+
+  }
+
+  checkIsThisCityLastInTheList = () => {
+    if (this.state.currentShowingCityID === this.state.listOfCities.length - 1) {
+      this.setState({
+        lastCityInTheList: !this.state.lastCityInTheList
+      })
+    }
+    
+  }
 
 
 
@@ -80,6 +112,11 @@ class App extends React.Component {
   }
 
   render() {
+
+    let cityIdToShow = this.state.currentShowingCityID;
+    console.log(this.state)
+
+
     return (
       <div className="app morning">
         <main>
@@ -95,18 +132,20 @@ class App extends React.Component {
             />
           </div>
 
+
+
           {(typeof this.state.weather.main != 'undefined') ? (
-            <div>
+            <div className='animated-container'>
               <div className='location-container'>
-                <div className='location'> {this.state.weather.name}, {this.state.weather.sys.country} </div>
+                <div className='location'> {this.state.listOfCities[cityIdToShow].weatherInfo.name}, {this.state.listOfCities[cityIdToShow].weatherInfo.sys.country} </div>
                 <div className='date'>{this.dateBuilder(new Date())}</div>
               </div>
               <div className='weather-container'>
                 <div className='temp'>
-                  {Math.round(this.state.weather.main.temp)}°c
+                  {Math.round(this.state.listOfCities[cityIdToShow].weatherInfo.main.temp)}°c
             </div>
                 <div className='weather'>
-                  {this.state.weather.weather[0].main}
+                  {this.state.listOfCities[cityIdToShow].weatherInfo.weather[0].main}
                 </div>
 
               </div>
@@ -114,8 +153,12 @@ class App extends React.Component {
                 onClick={this.updateCurrentCityWeather}
 
               >Update</button> */}
+              <button onClick={this.checkIsThisCityLastInTheList}>Prev City</button>
+              <button onClick={this.nextCityChangeHandler}>Next City</button>
             </div>
-          ) : null}
+          )
+            :
+            null}
 
 
 
