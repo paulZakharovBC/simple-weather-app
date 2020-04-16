@@ -10,8 +10,11 @@ const api = {
 class App extends React.Component {
   state = {
     query: '',
-    currentCity: '',
-    weather: {}
+    idForNextCity: 0,
+    currentShowingCityID: 0,
+    weather: {},
+    listOfCities: []
+
   }
 
   handleSearch = (event) => {
@@ -27,24 +30,38 @@ class App extends React.Component {
       fetch(`${api.base}weather?q=${this.state.query}&units=metric&APPID=${api.key}`)
         .then(res => res.json())
         .then(result => {
-          this.setState({
+          let newCity = {
+            cityId: this.state.idForNextCity,
+            weatherInfo: result
+          }
+          let newArray = [
+            ...this.state.listOfCities,
+            newCity
+          ]
+          this.setState( prevState => ({
             query: '',
-            weather: result
-          })
+            weather: result,
+            idForNextCity: prevState.idForNextCity + 1,
+            listOfCities: newArray
+          }))
         })
+
+        
+
+
     }
   }
 
-  updateCurrentCityWeather = () => {
-    fetch(`${api.base}weather?q=${this.state.currentCity}&units=metric&APPID=${api.key}`)
-      .then(res => res.json())
-      .then(result => {
-        this.setState({
-          weather: result
-        })
-      })
+  // updateCurrentCityWeather = () => {
+  //   fetch(`${api.base}weather?q=${this.state.currentCity}&units=metric&APPID=${api.key}`)
+  //     .then(res => res.json())
+  //     .then(result => {
+  //       this.setState({
+  //         weather: result
+  //       })
+  //     })
 
-  }
+  // }
 
 
 
