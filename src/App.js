@@ -120,13 +120,13 @@ class App extends React.Component {
             <div className='animated-container'>
               <div className='location-container'>
                 <i className={leftArrowClass.join(' ')} onClick={this.prevCityChangeHandler} />
-                
+
                 <div>
                   <div className='location'> {this.state.listOfCities[cityIdToShow].weatherInfo.name}, {this.state.listOfCities[cityIdToShow].weatherInfo.sys.country} </div>
                   <div className='date'>{this.dateBuilder(new Date())}</div>
                 </div>
                 <i className={rightArrowClass.join(' ')} onClick={this.nextCityChangeHandler} />
-                
+
               </div>
               <div className='weather-container'>
                 <div className='temp'>
@@ -134,7 +134,9 @@ class App extends React.Component {
             </div>
                 <div className='weather'>
                   {this.state.listOfCities[cityIdToShow].weatherInfo.weather[0].main}
-                  <img src={`http://openweathermap.org/img/wn/${this.state.listOfCities[cityIdToShow].weatherInfo.weather[0].icon}@2x.png`} />
+                  <div className='icon-box'>
+                    <img src={`http://openweathermap.org/img/wn/${this.state.listOfCities[cityIdToShow].weatherInfo.weather[0].icon}@2x.png`} />
+                  </div>
                 </div>
 
               </div>
