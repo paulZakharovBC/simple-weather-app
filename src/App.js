@@ -47,55 +47,33 @@ class App extends React.Component {
             listOfCities: newArray
           }))
         })
-
-
-
-
     }
   }
 
   nextCityChangeHandler = () => {
-
-    
     if (this.state.currentShowingCityID == this.state.listOfCities.length - 1) {
-      debugger
       this.setState({
         currentShowingCityID: 0
       })
     } else {
-      debugger
       this.setState(prevState => ({
-            currentShowingCityID: prevState.currentShowingCityID + 1
-        }))
+        currentShowingCityID: prevState.currentShowingCityID + 1
+      }))
     }
-
-    //   this.setState(prevState => ({
-    //     currentShowingCityID: prevState.currentShowingCityID + 1
-    //   }))
-    // }
-
-
-    // updateCurrentCityWeather = () => {
-    //   fetch(`${api.base}weather?q=${this.state.currentCity}&units=metric&APPID=${api.key}`)
-    //     .then(res => res.json())
-    //     .then(result => {
-    //       this.setState({
-    //         weather: result
-    //       })
-    //     })
-
   }
 
-  checkIsThisCityLastInTheList = () => {
-    if (this.state.currentShowingCityID === this.state.listOfCities.length - 1) {
-      this.setState({
-        lastCityInTheList: !this.state.lastCityInTheList
-      })
+  prevCityChangeHandler = () => {
+    if (this.state.currentShowingCityID === 0) {
+      this.setState(prevState => ({
+        currentShowingCityID: prevState.listOfCities.length - 1
+      }))
+    } else {
+      this.setState(prevState => ({
+        currentShowingCityID: prevState.currentShowingCityID - 1
+      }))
     }
-    
+
   }
-
-
 
   dateBuilder = (d) => {
 
@@ -114,9 +92,7 @@ class App extends React.Component {
   render() {
 
     let cityIdToShow = this.state.currentShowingCityID;
-    console.log(this.state)
-
-
+    
     return (
       <div className="app morning">
         <main>
@@ -153,7 +129,7 @@ class App extends React.Component {
                 onClick={this.updateCurrentCityWeather}
 
               >Update</button> */}
-              <button onClick={this.checkIsThisCityLastInTheList}>Prev City</button>
+              <button onClick={this.prevCityChangeHandler}>Prev City</button>
               <button onClick={this.nextCityChangeHandler}>Next City</button>
             </div>
           )
