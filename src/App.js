@@ -51,7 +51,7 @@ class App extends React.Component {
   }
 
   nextCityChangeHandler = () => {
-    if (this.state.currentShowingCityID == this.state.listOfCities.length - 1) {
+    if (this.state.currentShowingCityID === this.state.listOfCities.length - 1) {
       this.setState({
         currentShowingCityID: 0
       })
@@ -92,7 +92,13 @@ class App extends React.Component {
   render() {
 
     let cityIdToShow = this.state.currentShowingCityID;
-    
+    let leftArrowClass = ["fas fa-angle-left arrowBtn"]
+    let rightArrowClass = ["fas fa-angle-right arrowBtn"]
+    if (this.state.listOfCities.length > 1) {
+      leftArrowClass.push('activeBtn')
+      rightArrowClass.push('activeBtn')
+    }
+
     return (
       <div className="app morning">
         <main>
@@ -113,8 +119,14 @@ class App extends React.Component {
           {(typeof this.state.weather.main != 'undefined') ? (
             <div className='animated-container'>
               <div className='location-container'>
-                <div className='location'> {this.state.listOfCities[cityIdToShow].weatherInfo.name}, {this.state.listOfCities[cityIdToShow].weatherInfo.sys.country} </div>
-                <div className='date'>{this.dateBuilder(new Date())}</div>
+                <i className={leftArrowClass.join(' ')} onClick={this.prevCityChangeHandler} />
+                
+                <div>
+                  <div className='location'> {this.state.listOfCities[cityIdToShow].weatherInfo.name}, {this.state.listOfCities[cityIdToShow].weatherInfo.sys.country} </div>
+                  <div className='date'>{this.dateBuilder(new Date())}</div>
+                </div>
+                <i className={rightArrowClass.join(' ')} onClick={this.nextCityChangeHandler} />
+                
               </div>
               <div className='weather-container'>
                 <div className='temp'>
@@ -129,8 +141,8 @@ class App extends React.Component {
                 onClick={this.updateCurrentCityWeather}
 
               >Update</button> */}
-              <button onClick={this.prevCityChangeHandler}>Prev City</button>
-              <button onClick={this.nextCityChangeHandler}>Next City</button>
+
+
             </div>
           )
             :

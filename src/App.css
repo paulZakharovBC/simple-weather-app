@@ -45,7 +45,12 @@ main {
     opacity: 1;
     transition: opactity .4s ease-in-out;
 } */
-
+.location-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
 .location {
     color: #fff;
     font-size: 32px;
@@ -87,3 +92,12 @@ main {
     text-shadow: 3px 3px rgba(50,50,70,0.5);
 }
 
+.arrowBtn {
+    font-size: 50px;
+    color: rgba(255,255,255,0.2);
+    text-shadow: 3px 6px rgba(50,50,70,0.5);
+}
+
+.activeBtn {
+    color: #fff;
+}
