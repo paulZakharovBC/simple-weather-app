@@ -7,6 +7,11 @@ const api = {
   base: 'https://api.openweathermap.org/data/2.5/'
 }
 
+const timeApi = {
+  key: "cbbe33181e2b4c389ee8303db47d81b0",
+  base: "https://api.ipgeolocation.io/timezone?apiKey="
+}
+
 class App extends React.Component {
   state = {
     query: '',
@@ -35,21 +40,38 @@ class App extends React.Component {
             cityId: this.state.idForNextCity,
             weatherInfo: result
           }
-          let newArray = [
-            ...this.state.listOfCities,
-            newCity
-          ]
-          this.setState(prevState => ({
-            query: '',
-            weather: result,
-            idForNextCity: prevState.idForNextCity + 1,
-            currentShowingCityID: newCity.cityId,
-            listOfCities: newArray
-          }))
-        })
-    }
-  }
 
+          let cityCoord = {
+            lat: newCity.weatherInfo.coord.lat,
+            long: newCity.weatherInfo.coord.lon
+          }
+
+          fetch(`${timeApi.base}${timeApi.key}&lat=${cityCoord.lat}&long${cityCoord.long}`)
+            .then(timeRes => timeRes.json())
+            .then(timeResult => {
+              let lastUpdateCityTime = timeResult.time_24
+              let cityWithCord = {
+                ...newCity,
+                lastUpdateCityTime
+              }
+              let newArray = [
+                ...this.state.listOfCities,
+                cityWithCord
+              ]
+              this.setState(prevState => ({
+                query: '',
+                weather: result,
+                idForNextCity: prevState.idForNextCity + 1,
+                currentShowingCityID: newCity.cityId,
+                listOfCities: newArray
+              }))
+            })
+        })
+
+    }
+
+
+  }
   nextCityChangeHandler = () => {
     if (this.state.currentShowingCityID === this.state.listOfCities.length - 1) {
       this.setState({
@@ -94,13 +116,14 @@ class App extends React.Component {
     let cityIdToShow = this.state.currentShowingCityID;
     let leftArrowClass = ["fas fa-angle-left arrowBtn"]
     let rightArrowClass = ["fas fa-angle-right arrowBtn"]
+    let appBackgroundClass = ['app morning']
     if (this.state.listOfCities.length > 1) {
       leftArrowClass.push('activeBtn')
       rightArrowClass.push('activeBtn')
     }
 
     return (
-      <div className="app morning">
+      <div className={appBackgroundClass.join(' ')}>
         <main>
           <div className='search-box'>
             <input
@@ -124,6 +147,7 @@ class App extends React.Component {
                 <div>
                   <div className='location'> {this.state.listOfCities[cityIdToShow].weatherInfo.name}, {this.state.listOfCities[cityIdToShow].weatherInfo.sys.country} </div>
                   <div className='date'>{this.dateBuilder(new Date())}</div>
+                  <div>Time:</div>
                 </div>
                 <i className={rightArrowClass.join(' ')} onClick={this.nextCityChangeHandler} />
 
@@ -141,7 +165,7 @@ class App extends React.Component {
 
               </div>
               {/* <button
-                onClick={this.updateCurrentCityWeather}
+                onClick={() => this.setLocalTime(cityIdToShow)}
 
               >Update</button> */}
 
