@@ -134,6 +134,7 @@ class App extends React.Component {
             </div>
                 <div className='weather'>
                   {this.state.listOfCities[cityIdToShow].weatherInfo.weather[0].main}
+                  <img src={`http://openweathermap.org/img/wn/${this.state.listOfCities[cityIdToShow].weatherInfo.weather[0].icon}@2x.png`} />
                 </div>
 
               </div>
