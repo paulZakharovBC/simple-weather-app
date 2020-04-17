@@ -1,11 +1,11 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "9ef69722c0ec83558dbf0e706c89fb6b",
+    "revision": "a595fc48b9844ed46d10c526959e590c",
     "url": "/simple-weather-app/index.html"
   },
   {
-    "revision": "b2855c91445add78b238",
-    "url": "/simple-weather-app/static/css/main.a3e565ca.chunk.css"
+    "revision": "81ba30f09c7db3f85c35",
+    "url": "/simple-weather-app/static/css/main.247e8dc4.chunk.css"
   },
   {
     "revision": "d3143f89413ff20ccc1f",
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/simple-weather-app/static/js/2.613b825a.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "b2855c91445add78b238",
-    "url": "/simple-weather-app/static/js/main.fbcef5ea.chunk.js"
+    "revision": "81ba30f09c7db3f85c35",
+    "url": "/simple-weather-app/static/js/main.255148fc.chunk.js"
   },
   {
     "revision": "67b2802be049f7060683",
