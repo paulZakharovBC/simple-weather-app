@@ -1,26 +1,29 @@
 .app {
         width: 100%;
         height: 100vh;
-        background-size: cover; 
+        
 }
 
 .morning {
     background: url("./img/morning-bg.jpg");
-    
+    background-size: cover; 
 }
 
 .day {
     background: url('./img/day-bg.jpg');
+    background-size: cover; 
 
 }
 
 .evening {
     background: url('./img/evening-bg.jpg');
+    background-size: cover; 
 
 }
 
 .night {
     background: url('./img/night-bg.jpg');
+    background-size: cover; 
 
 }
 

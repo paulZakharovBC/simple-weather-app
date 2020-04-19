@@ -38,15 +38,14 @@ class App extends React.Component {
         .then(result => {
           let newCity = {
             cityId: this.state.idForNextCity,
-            weatherInfo: result
+            weatherInfo: result 
           }
-
           let cityCoord = {
             lat: newCity.weatherInfo.coord.lat,
             long: newCity.weatherInfo.coord.lon
           }
 
-          fetch(`${timeApi.base}${timeApi.key}&lat=${cityCoord.lat}&long${cityCoord.long}`)
+          fetch(`${timeApi.base}${timeApi.key}&lat=${cityCoord.lat}&long=${cityCoord.long}`)
             .then(timeRes => timeRes.json())
             .then(timeResult => {
               let lastUpdateCityTime = timeResult.time_24
@@ -54,10 +53,12 @@ class App extends React.Component {
                 ...newCity,
                 lastUpdateCityTime
               }
+              // console.log(cityWithCord)
               let newArray = [
                 ...this.state.listOfCities,
                 cityWithCord
               ]
+              // console.log(newArray)
               this.setState(prevState => ({
                 query: '',
                 weather: result,
@@ -66,7 +67,13 @@ class App extends React.Component {
                 listOfCities: newArray
               }))
             })
+            .catch((error => {
+              console.error('Error:', error);
+            }))
         })
+        .catch((error => {
+          console.error('Error:', error);
+        }))
 
     }
 
@@ -121,6 +128,21 @@ class App extends React.Component {
       leftArrowClass.push('activeBtn')
       rightArrowClass.push('activeBtn')
     }
+    
+    if (this.state.listOfCities.length > 0) {
+      const cityTimeForBackground = this.state.listOfCities[cityIdToShow].lastUpdateCityTime;
+      if (cityTimeForBackground >= '12:00:00' && cityTimeForBackground <= '18:00:00') {
+        appBackgroundClass.push('day')
+      } else if (cityTimeForBackground >= '18:00:00' && cityTimeForBackground <= '23:00:00') {
+        appBackgroundClass.push('evening')
+      } else if (cityTimeForBackground >= '23:00:00' && cityTimeForBackground <= '06:00:00') {
+        appBackgroundClass.push('night')
+      } else {
+        appBackgroundClass.push(' ')
+      }
+
+    }
+    
 
     return (
       <div className={appBackgroundClass.join(' ')}>
