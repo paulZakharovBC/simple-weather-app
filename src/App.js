@@ -38,7 +38,7 @@ class App extends React.Component {
         .then(result => {
           let newCity = {
             cityId: this.state.idForNextCity,
-            weatherInfo: result 
+            weatherInfo: result
           }
           let cityCoord = {
             lat: newCity.weatherInfo.coord.lat,
@@ -123,26 +123,31 @@ class App extends React.Component {
     let cityIdToShow = this.state.currentShowingCityID;
     let leftArrowClass = ["fas fa-angle-left arrowBtn"]
     let rightArrowClass = ["fas fa-angle-right arrowBtn"]
-    let appBackgroundClass = ['app morning']
+    let appBackgroundClass = ['app']
     if (this.state.listOfCities.length > 1) {
       leftArrowClass.push('activeBtn')
       rightArrowClass.push('activeBtn')
     }
-    
+
     if (this.state.listOfCities.length > 0) {
       const cityTimeForBackground = this.state.listOfCities[cityIdToShow].lastUpdateCityTime;
-      if (cityTimeForBackground >= '12:00:00' && cityTimeForBackground <= '18:00:00') {
+      const morning = cityTimeForBackground > "06" && cityTimeForBackground < "12"
+      const day = cityTimeForBackground > "12" && cityTimeForBackground < "19"
+      const evening = cityTimeForBackground > "19" && cityTimeForBackground < "23"
+      const night = cityTimeForBackground > "23" || cityTimeForBackground < "06"
+
+      if (morning) {
+        appBackgroundClass.push('morning')
+      } else if (day) {
         appBackgroundClass.push('day')
-      } else if (cityTimeForBackground >= '18:00:00' && cityTimeForBackground <= '23:00:00') {
+      } else if (evening) {
         appBackgroundClass.push('evening')
-      } else if (cityTimeForBackground >= '23:00:00' && cityTimeForBackground <= '06:00:00') {
+      } else if (night) {
         appBackgroundClass.push('night')
-      } else {
-        appBackgroundClass.push(' ')
       }
 
     }
-    
+
 
     return (
       <div className={appBackgroundClass.join(' ')}>
@@ -169,7 +174,7 @@ class App extends React.Component {
                 <div>
                   <div className='location'> {this.state.listOfCities[cityIdToShow].weatherInfo.name}, {this.state.listOfCities[cityIdToShow].weatherInfo.sys.country} </div>
                   <div className='date'>{this.dateBuilder(new Date())}</div>
-                  <div>Time:</div>
+                  <div>Last Updated: {this.state.listOfCities[cityIdToShow].lastUpdateCityTime} (local)</div>
                 </div>
                 <i className={rightArrowClass.join(' ')} onClick={this.nextCityChangeHandler} />
 
