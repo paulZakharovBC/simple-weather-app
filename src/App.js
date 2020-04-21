@@ -1,4 +1,5 @@
 import React from 'react';
+import CitiesSearch from './Components/CitiesSearch'
 import './App.css';
 
 
@@ -11,6 +12,8 @@ const timeApi = {
   key: "cbbe33181e2b4c389ee8303db47d81b0",
   base: "https://api.ipgeolocation.io/timezone?apiKey="
 }
+
+
 
 class App extends React.Component {
   state = {
@@ -118,6 +121,8 @@ class App extends React.Component {
     return `${day} ${date} ${month} ${year}`
   }
 
+  
+
   render() {
 
     let cityIdToShow = this.state.currentShowingCityID;
@@ -150,66 +155,72 @@ class App extends React.Component {
 
 
     return (
-      <div className={appBackgroundClass.join(' ')}>
-        <main>
-          <div className='search-box'>
-            <input
-              type='text'
-              className='search-input'
-              placeholder='Search...'
-              onChange={this.handleSearch}
-              value={this.state.query}
-              onKeyPress={this.search}
+      <div className='basic-lair'>
+        <div className={appBackgroundClass.join(' ')}>
+          <main>
+            <div className='search-box'>
+              <input
+                type='text'
+                className='search-input'
+                placeholder='Search...'
+                onChange={this.handleSearch}
+                value={this.state.query}
+                onKeyPress={this.search}
 
-            />
-          </div>
-
-
-
-          {(typeof this.state.weather.main != 'undefined') ? (
-            <div className='animated-container'>
-              <div className='location-container'>
-                <i className={leftArrowClass.join(' ')} onClick={this.prevCityChangeHandler} />
-
-                <div>
-                  <div className='location'> {this.state.listOfCities[cityIdToShow].weatherInfo.name}, {this.state.listOfCities[cityIdToShow].weatherInfo.sys.country} </div>
-                  <div className='date'>{this.dateBuilder(new Date())}</div>
-                  <div>Last Updated: {this.state.listOfCities[cityIdToShow].lastUpdateCityTime} (local)</div>
-                </div>
-                <i className={rightArrowClass.join(' ')} onClick={this.nextCityChangeHandler} />
-
-              </div>
-              <div className='weather-container'>
-                <div className='temp'>
-                  {Math.round(this.state.listOfCities[cityIdToShow].weatherInfo.main.temp)}°c
+              />
             </div>
-                <div className='weather'>
-                  {this.state.listOfCities[cityIdToShow].weatherInfo.weather[0].main}
-                  <div className='icon-box'>
-                    <img src={`http://openweathermap.org/img/wn/${this.state.listOfCities[cityIdToShow].weatherInfo.weather[0].icon}@2x.png`} />
-                  </div>
-                </div>
+            <CitiesSearch />
 
-              </div>
-              {/* <button
+            {/* {this.state.input.length >= 3 ? <CitiesSearch /> : null} */}
+
+
+
+            {(typeof this.state.weather.main != 'undefined') ? (
+              <div className='animated-container'>
+                <div className='location-container'>
+                  <i className={leftArrowClass.join(' ')} onClick={this.prevCityChangeHandler} />
+
+                  <div>
+                    <div className='location'> {this.state.listOfCities[cityIdToShow].weatherInfo.name}, {this.state.listOfCities[cityIdToShow].weatherInfo.sys.country} </div>
+                    <div className='date'>{this.dateBuilder(new Date())}</div>
+                    <p>Last Updated: {this.state.listOfCities[cityIdToShow].lastUpdateCityTime} (local)</p>
+                  </div>
+                  <i className={rightArrowClass.join(' ')} onClick={this.nextCityChangeHandler} />
+
+                </div>
+                <div className='weather-container'>
+                  <div className='temp'>
+                    {Math.round(this.state.listOfCities[cityIdToShow].weatherInfo.main.temp)}°c
+            </div>
+                  <div className='weather'>
+                    {this.state.listOfCities[cityIdToShow].weatherInfo.weather[0].main}
+                    <div className='icon-box'>
+                      <img src={`http://openweathermap.org/img/wn/${this.state.listOfCities[cityIdToShow].weatherInfo.weather[0].icon}@2x.png`} />
+                    </div>
+                  </div>
+
+                </div>
+                {/* <button
                 onClick={() => this.setLocalTime(cityIdToShow)}
 
               >Update</button> */}
 
 
-            </div>
-          )
-            :
-            null}
+              </div>
+            )
+              :
+              null}
 
 
 
 
 
-        </main>
+          </main>
 
+        </div>
       </div>
     );
+
 
   }
 }

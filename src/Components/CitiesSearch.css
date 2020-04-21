@@ -1,0 +1,25 @@
+.listOfCities-box {
+    width: 323px;
+    height: 200px;
+    background-color: rgba(255,255,255,0.8);
+    position: absolute;
+    top: 50px;
+    border-radius: 16px;
+    box-shadow: 0px 5px rgba(0,0,0,0.2);
+    /* transform: translateY(-300px); */
+    transition: 0.4s ease;
+}
+
+.listOfCities-box .active {
+    transform: translateX(0px);
+    
+}
+
+.listOfCities-box ul {
+    list-style: none;
+    padding: 15px 15px 15px 30px;
+}
+
+.listOfCities-box ul li {
+    padding: 5px;
+}
