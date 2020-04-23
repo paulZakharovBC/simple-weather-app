@@ -4,7 +4,7 @@ import { DebounceInput } from 'react-debounce-input';
 import './App.css';
 
 
-const api = {
+const weatherApi = {
   key: '6b5eaf09b6d23acb71e8f02bfa067a66',
   base: 'https://api.openweathermap.org/data/2.5/'
 }
@@ -19,12 +19,9 @@ const timeApi = {
 class App extends React.Component {
   state = {
     query: '',
-    chosenCityToShowWeather: '',
     idForNextCity: 0,
-    lastCityInTheList: false,
     showSearchingListPopUp: false,
     currentShowingCityID: 0,
-    weather: {},
     searchingCitiesList: [],
     listOfCities: []
 
@@ -36,7 +33,7 @@ class App extends React.Component {
       // currentCity: event.target.value
     })
 
-    if (this.state.query.length > 2) {
+    if (this.state.query.length > 1) {
       this.setState({
         showSearchingListPopUp: true
       })
@@ -72,7 +69,7 @@ class App extends React.Component {
     event.persist()
     
     // if (event.key === 'Enter') {
-    fetch(`${api.base}weather?lat=${item.latitude}&lon=${item.longitude}&appid=${api.key}`)
+    fetch(`${weatherApi.base}weather?q=${item.city},${item.countryCode}&appid=${weatherApi.key}`)
       .then(res => res.json())
       .then(result => {
         let newCity = {
@@ -92,15 +89,12 @@ class App extends React.Component {
               ...newCity,
               lastUpdateCityTime
             }
-            // console.log(cityWithCord)
             let newArray = [
               ...this.state.listOfCities,
               cityWithCord
             ]
-            // console.log(newArray)
             this.setState(prevState => ({
               query: '',
-              weather: result,
               idForNextCity: prevState.idForNextCity + 1,
               currentShowingCityID: newCity.cityId,
               listOfCities: newArray,
@@ -239,7 +233,7 @@ class App extends React.Component {
 
 
 
-            {(typeof this.state.weather.main != 'undefined') ? (
+            {(this.state.listOfCities.length > 0) ? (
               <div className='animated-container'>
                 <div className='location-container'>
                   <i className={leftArrowClass.join(' ')} onClick={this.prevCityChangeHandler} />
