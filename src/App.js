@@ -224,6 +224,7 @@ class App extends React.Component {
 
             {this.state.showSearchingListPopUp ? 
             <CitiesSearch
+            searchingCitiesList={this.state.searchingCitiesList}
             cities={this.state.searchingCitiesList}
             confirmCity={this.confirmCity}
 

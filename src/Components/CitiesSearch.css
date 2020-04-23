@@ -10,6 +10,24 @@
     transition: 0.4s ease;
 }
 
+.no-results {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    margin-top: 10px;
+
+}
+
+.no-results i {
+    font-size: 25px;
+    padding: 10px;
+}
+.no-results p {
+    padding: 10px;
+}
+
 .listOfCities-box .active {
     transform: translateX(0px);
     
