@@ -1,5 +1,6 @@
 import React from 'react';
 import CitiesSearch from './Components/CitiesSearch'
+import { DebounceInput } from 'react-debounce-input';
 import './App.css';
 
 
@@ -18,10 +19,13 @@ const timeApi = {
 class App extends React.Component {
   state = {
     query: '',
+    chosenCityToShowWeather: '',
     idForNextCity: 0,
     lastCityInTheList: false,
+    showSearchingListPopUp: false,
     currentShowingCityID: 0,
     weather: {},
+    searchingCitiesList: [],
     listOfCities: []
 
   }
@@ -29,59 +33,90 @@ class App extends React.Component {
   handleSearch = (event) => {
     this.setState({
       query: event.target.value,
-      currentCity: event.target.value
+      // currentCity: event.target.value
     })
 
-  }
-
-  search = (event) => {
-    if (event.key === 'Enter') {
-      fetch(`${api.base}weather?q=${this.state.query}&units=metric&APPID=${api.key}`)
-        .then(res => res.json())
-        .then(result => {
-          let newCity = {
-            cityId: this.state.idForNextCity,
-            weatherInfo: result
-          }
-          let cityCoord = {
-            lat: newCity.weatherInfo.coord.lat,
-            long: newCity.weatherInfo.coord.lon
-          }
-
-          fetch(`${timeApi.base}${timeApi.key}&lat=${cityCoord.lat}&long=${cityCoord.long}`)
-            .then(timeRes => timeRes.json())
-            .then(timeResult => {
-              let lastUpdateCityTime = timeResult.time_24
-              let cityWithCord = {
-                ...newCity,
-                lastUpdateCityTime
-              }
-              // console.log(cityWithCord)
-              let newArray = [
-                ...this.state.listOfCities,
-                cityWithCord
-              ]
-              // console.log(newArray)
-              this.setState(prevState => ({
-                query: '',
-                weather: result,
-                idForNextCity: prevState.idForNextCity + 1,
-                currentShowingCityID: newCity.cityId,
-                listOfCities: newArray
-              }))
-            })
-            .catch((error => {
-              console.error('Error:', error);
-            }))
-        })
-        .catch((error => {
-          console.error('Error:', error);
-        }))
-
+    if (this.state.query.length > 2) {
+      this.setState({
+        showSearchingListPopUp: true
+      })
+    } else {
+      this.setState({
+        showSearchingListPopUp: false
+      })
     }
 
+    fetch(`https://wft-geo-db.p.rapidapi.com/v1/geo/cities?namePrefix=${this.state.query}&sort=-population`, {
+      "method": "GET",
+      "headers": {
+        "x-rapidapi-host": "wft-geo-db.p.rapidapi.com",
+        "x-rapidapi-key": "f94ea70c7amsh93941eb1918691ep15f1ecjsn783eefb2ee1f"
+      }
+    })
+      .then(resp => resp.json())
+      .then(result => {
+        let list = result;
+        this.setState({
+          searchingCitiesList: list.data
+        })
+      })
+      .catch(err => {
+        console.log(err);
+      });
+
 
   }
+
+  search = (event, item) => {
+    event.preventDefault();
+    event.persist()
+    
+    // if (event.key === 'Enter') {
+    fetch(`${api.base}weather?lat=${item.latitude}&lon=${item.longitude}&appid=${api.key}`)
+      .then(res => res.json())
+      .then(result => {
+        let newCity = {
+          cityId: this.state.idForNextCity,
+          weatherInfo: result
+        }
+        let cityCoord = {
+          lat: newCity.weatherInfo.coord.lat,
+          long: newCity.weatherInfo.coord.lon
+        }
+
+        fetch(`${timeApi.base}${timeApi.key}&lat=${cityCoord.lat}&long=${cityCoord.long}`)
+          .then(timeRes => timeRes.json())
+          .then(timeResult => {
+            let lastUpdateCityTime = timeResult.time_24
+            let cityWithCord = {
+              ...newCity,
+              lastUpdateCityTime
+            }
+            // console.log(cityWithCord)
+            let newArray = [
+              ...this.state.listOfCities,
+              cityWithCord
+            ]
+            // console.log(newArray)
+            this.setState(prevState => ({
+              query: '',
+              weather: result,
+              idForNextCity: prevState.idForNextCity + 1,
+              currentShowingCityID: newCity.cityId,
+              listOfCities: newArray,
+              showSearchingListPopUp: false
+            }))
+          })
+          .catch((error => {
+            console.error('Error:', error);
+          }))
+      })
+      .catch((error => {
+        console.error('Error:', error);
+      }))
+
+  }
+
   nextCityChangeHandler = () => {
     if (this.state.currentShowingCityID === this.state.listOfCities.length - 1) {
       this.setState({
@@ -121,7 +156,15 @@ class App extends React.Component {
     return `${day} ${date} ${month} ${year}`
   }
 
-  
+  confirmCity = (item, event) => {
+    this.setState({
+      query: item.city,
+      searchingCitiesList: []
+    })
+    this.search(event, item)
+  }
+
+
 
   render() {
 
@@ -159,19 +202,40 @@ class App extends React.Component {
         <div className={appBackgroundClass.join(' ')}>
           <main>
             <div className='search-box'>
-              <input
-                type='text'
-                className='search-input'
-                placeholder='Search...'
+              <form onSubmit={this.search}>
+                <DebounceInput
+                  type='text'
+                  className='search-input'
+                  placeholder='Search...'
+                  minLength={1}
+                  debounceTimeout={800}
+                  onChange={this.handleSearch}
+                  // onKeyPress={this.search}
+                  value={this.state.query} />
+              </form>
+
+              {/* <input
                 onChange={this.handleSearch}
                 value={this.state.query}
                 onKeyPress={this.search}
+              /> */}
 
-              />
+
             </div>
-            <CitiesSearch />
+            {/* <CitiesSearch
+              cities={this.state.searchingCitiesList}
+              confirmCity={this.confirmCity}
 
-            {/* {this.state.input.length >= 3 ? <CitiesSearch /> : null} */}
+            /> */}
+
+            {this.state.showSearchingListPopUp ? 
+            <CitiesSearch
+            cities={this.state.searchingCitiesList}
+            confirmCity={this.confirmCity}
+
+          /> :
+          null
+            }
 
 
 
@@ -190,7 +254,7 @@ class App extends React.Component {
                 </div>
                 <div className='weather-container'>
                   <div className='temp'>
-                    {Math.round(this.state.listOfCities[cityIdToShow].weatherInfo.main.temp)}°c
+                    {Math.round(this.state.listOfCities[cityIdToShow].weatherInfo.main.temp - 273.15)}°c
             </div>
                   <div className='weather'>
                     {this.state.listOfCities[cityIdToShow].weatherInfo.weather[0].main}
