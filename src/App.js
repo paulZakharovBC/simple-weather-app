@@ -23,7 +23,33 @@ class App extends React.Component {
     showSearchingListPopUp: false,
     currentShowingCityID: 0,
     searchingCitiesList: [],
-    listOfCities: []
+    listOfCities: [],
+    weatherIcons: [
+      {
+        weatherName: 'clear sky', 
+        icon: 'fas fa-sun'
+      },
+      {
+        weatherName: 'few clouds', 
+        icon: 'fas fa-cloud-sun'
+      },
+      {
+        weatherName: 'scattered clouds', 
+        icon: 'fas fa-cloud'
+      },
+      {
+        weatherName: 'few clouds', 
+        icon: 'fas fa-cloud-sun'
+      },
+      {
+        weatherName: 'few clouds', 
+        icon: 'fas fa-cloud-sun'
+      },
+      {
+        weatherName: 'few clouds', 
+        icon: 'fas fa-cloud-sun'
+      },
+    ]
 
   }
 
